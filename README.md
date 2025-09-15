@@ -1,8 +1,8 @@
-# Small Docker container for the DSMR Reader Remote Datalogger
+# Docker container for the DSMR Reader Remote Datalogger
 
 [![CI - Build and Push Multi-Arch Docker Image](https://github.com/wimb0/dsmr-remote-datalogger/actions/workflows/ci.yaml/badge.svg)](https://github.com/wimb0/dsmr-remote-datalogger/actions/workflows/ci.yaml)
 
-A compact, multi-platform Docker container for the DSMR Reader remote datalogger, using the official [dsmr_datalogger_api_client.py](https://raw.githubusercontent.com/dsmrreader/dsmr-reader/v5/dsmr_datalogger/scripts/dsmr_datalogger_api_client.py)
+Docker container for the DSMR Reader remote datalogger, using the official [dsmr_datalogger_api_client.py](https://raw.githubusercontent.com/dsmrreader/dsmr-reader/v5/dsmr_datalogger/scripts/dsmr_datalogger_api_client.py)
 
 This container reads data from a smart meter via a P1 serial cable and forwards it to a receiving DSMR-reader instance.
 
