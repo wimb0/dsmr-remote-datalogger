@@ -1,51 +1,45 @@
-# .github/workflows/ci.yaml
+name: CI - Build and Push Multi-Arch Docker Image
 
-name: CI - Build and Push Docker Image
-
-# Deze workflow draait elke keer als er een push is naar de 'main' branch
 on:
   push:
     branches: [ "main" ]
 
 jobs:
   build-and-push:
-    # De workflow draait op een virtuele machine met de laatste versie van Ubuntu
     runs-on: ubuntu-latest
-
-    # Permissions zijn nodig om te kunnen schrijven naar de GitHub Container Registry
     permissions:
       contents: read
       packages: write
 
     steps:
-      # Stap 1: De code van je repository downloaden in de workflow
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Stap 2: Inloggen bij de GitHub Container Registry (ghcr.io)
-      # Gebruikt een tijdelijk, veilig token dat GitHub automatisch aanmaakt
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v3
+
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: docker/setup-buildx-action@v3
+
       - name: Log in to the Container registry
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
-          # De gebruikersnaam is je GitHub gebruikersnaam of organisatie
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      # Stap 3: Metadata genereren voor de Docker image
-      # Dit creëert automatisch handige tags, zoals 'latest' en de unieke git commit hash
       - name: Extract metadata for Docker
         id: meta
         uses: docker/metadata-action@v5
         with:
           images: ghcr.io/${{ github.repository }}
 
-      # Stap 4: De Docker image bouwen en pushen naar de registry
-      # Gebruikt de Dockerfile uit je repository en de tags van de vorige stap
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
+          platforms: linux/amd64,linux/arm64,linux/arm/v7
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
