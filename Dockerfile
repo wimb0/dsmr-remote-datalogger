@@ -1,17 +1,16 @@
-FROM python:3.13-alpine
+FROM python:3.13-slim
 
 WORKDIR /app
 
-RUN apk add --no-cache curl
+RUN apt-get update && apt-get install -y --no-install-recommends curl \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN addgroup dsmr && \
-    adduser -D -G dsmr dsmr && \
-    addgroup dsmr dialout
+RUN groupadd --system dsmr && useradd --system --gid dsmr dsmr \
+    && usermod -a -G dialout dsmr
 
 RUN pip install --no-cache-dir pyserial requests python-decouple dsmr-parser
 
 RUN curl -o dsmr_datalogger_api_client.py https://raw.githubusercontent.com/dsmrreader/dsmr-reader/v5/dsmr_datalogger/scripts/dsmr_datalogger_api_client.py
-
 RUN chown dsmr:dsmr /app/dsmr_datalogger_api_client.py
 
 USER dsmr
@@ -23,9 +22,5 @@ ENV DSMRREADER_REMOTE_DATALOGGER_SERIAL_PORT="/dev/ttyUSB0"
 ENV DSMRREADER_REMOTE_DATALOGGER_SERIAL_BAUDRATE="115200"
 ENV DSMRREADER_REMOTE_DATALOGGER_SERIAL_BYTESIZE="8"
 ENV DSMRREADER_REMOTE_DATALOGGER_SERIAL_PARITY="N"
-
-#ENV DSMRREADER_REMOTE_DATALOGGER_TIMEOUT=""
-#ENV DSMRREADER_REMOTE_DATALOGGER_SLEEP=""
-#ENV DSMRREADER_REMOTE_DATALOGGER_DEBUG_LOGGING="true"
 
 CMD ["python", "./dsmr_datalogger_api_client.py"]
