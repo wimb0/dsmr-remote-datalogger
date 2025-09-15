@@ -1,6 +1,6 @@
 FROM python:3.13-alpine AS builder
 
-RUN apk add --no-cache curl build-base libffi-dev rust cargo
+RUN apk add --no-cache build-base libffi-dev rust cargo
 
 RUN python -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
@@ -10,6 +10,8 @@ RUN pip install --no-cache-dir pyserial requests python-decouple dsmr-parser
 FROM python:3.13-alpine
 
 WORKDIR /app
+
+RUN apk add --no-cache curl
 
 RUN addgroup dsmr && \
     adduser -D -G dsmr dsmr && \
