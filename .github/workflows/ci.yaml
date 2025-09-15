@@ -5,6 +5,8 @@ on:
     branches: [ "main" ]
     tags:
       - 'v*'
+    paths-ignore:
+      - '**.md'
 
 jobs:
   build-and-push:
@@ -21,7 +23,6 @@ jobs:
         uses: docker/setup-qemu-action@v3
 
       - name: Set up Docker Buildx
-        id: buildx
         uses: docker/setup-buildx-action@v3
 
       - name: Log in to the Container registry
@@ -38,6 +39,7 @@ jobs:
           images: ghcr.io/${{ github.repository }}
           tags: |
             type=raw,value=latest,enable={{is_default_branch}}
+            type=semver,pattern={{version}}
 
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
