@@ -5,7 +5,7 @@ FROM python:3.13-alpine
 WORKDIR /app
 
 # Installeer curl
-RUN apk add --no-cache curl
+RUN apk add --no-cache curl build-base libffi-dev
 
 # Maak een non-root user aan
 RUN addgroup dsmr && \
