@@ -19,7 +19,7 @@ RUN addgroup dsmr && \
 
 COPY --from=builder /opt/venv /opt/venv
 
-RUN curl -o dsmr_datalogger_api_client.py https://raw.githubusercontent.com/dsmrreader/dsmr-reader/v5/dsmr_datalogger/scripts/dsmr_datalogger_api_client.py
+RUN curl -o dsmr_datalogger_api_client.py https://raw.githubusercontent.com/dsmrreader/dsmr-reader/v6/src/dsmr_datalogger/scripts/dsmr_datalogger_api_client.py
 RUN chown dsmr:dsmr /app/dsmr_datalogger_api_client.py
 
 USER dsmr
