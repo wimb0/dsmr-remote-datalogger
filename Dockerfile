@@ -1,6 +1,6 @@
 FROM python:3.13-alpine AS builder
 
-RUN apk add --no-cache build-base libffi-dev openssl-dev
+RUN apk add --no-cache build-base libffi-dev openssl-dev rust cargo
 
 RUN python -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
