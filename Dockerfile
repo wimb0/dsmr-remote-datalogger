@@ -33,4 +33,7 @@ ENV DSMRREADER_REMOTE_DATALOGGER_SERIAL_BAUDRATE="115200"
 ENV DSMRREADER_REMOTE_DATALOGGER_SERIAL_BYTESIZE="8"
 ENV DSMRREADER_REMOTE_DATALOGGER_SERIAL_PARITY="N"
 
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+    CMD pgrep -f dsmr_datalogger_api_client.py > /dev/null || exit 1
+
 CMD ["python", "./dsmr_datalogger_api_client.py"]
