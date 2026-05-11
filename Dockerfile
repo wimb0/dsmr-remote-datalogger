@@ -1,6 +1,6 @@
 FROM python:3.13-alpine AS builder
 
-RUN apk add --no-cache build-base libffi-dev rust cargo openssl-dev
+RUN apk add --no-cache build-base libffi-dev openssl-dev
 
 RUN python -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
@@ -19,13 +19,12 @@ RUN addgroup dsmr && \
 
 COPY --from=builder /opt/venv /opt/venv
 
-RUN curl -o dsmr_datalogger_api_client.py https://raw.githubusercontent.com/dsmrreader/dsmr-reader/v5/dsmr_datalogger/scripts/dsmr_datalogger_api_client.py
-RUN chown dsmr:dsmr /app/dsmr_datalogger_api_client.py
+RUN curl -o dsmr_datalogger_api_client.py https://raw.githubusercontent.com/dsmrreader/dsmr-reader/v5/dsmr_datalogger/scripts/dsmr_datalogger_api_client.py && \
+    chown dsmr:dsmr /app/dsmr_datalogger_api_client.py
 
 USER dsmr
 
 ENV PATH="/opt/venv/bin:$PATH"
-
 ENV DSMRREADER_REMOTE_DATALOGGER_API_HOSTS="http://dsmr-reader-host"
 ENV DSMRREADER_REMOTE_DATALOGGER_API_KEYS="JE_API_KEY"
 ENV DSMRREADER_REMOTE_DATALOGGER_INPUT_METHOD="serial"
