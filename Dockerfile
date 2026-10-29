@@ -7,15 +7,12 @@ ENV PYTHONUNBUFFERED=1 \
 
 WORKDIR /app
 
-COPY requirements.txt .
-RUN pip install -r requirements.txt
+RUN pip install pyserial requests python-decouple
 
-# Non-root gebruiker met toegang tot de seriële poort
 RUN addgroup -S dsmr \
  && adduser -S -G dsmr dsmr \
  && addgroup dsmr dialout
 
-# Pin bij voorkeur op een commit-hash i.p.v. de v6-branch
 ADD --chown=dsmr:dsmr --chmod=644 \
     https://raw.githubusercontent.com/dsmrreader/dsmr-reader/v6/src/dsmr_datalogger/scripts/dsmr_datalogger_api_client.py \
     /app/dsmr_datalogger_api_client.py
@@ -28,6 +25,6 @@ ENV DSMRREADER_REMOTE_DATALOGGER_API_HOSTS="http://dsmr-reader-host" \
     DSMRREADER_REMOTE_DATALOGGER_SERIAL_BAUDRATE="115200" \
     DSMRREADER_REMOTE_DATALOGGER_SERIAL_BYTESIZE="8" \
     DSMRREADER_REMOTE_DATALOGGER_SERIAL_PARITY="N"
-# DSMRREADER_REMOTE_DATALOGGER_API_KEYS: bij runtime meegeven
+# DSMRREADER_REMOTE_DATALOGGER_API_KEYS="JE_API_KEY"
 
 CMD ["python", "/app/dsmr_datalogger_api_client.py"]
