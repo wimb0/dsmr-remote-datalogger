@@ -2,11 +2,11 @@
 
 [![Build and Push Multi-Arch Docker Image](https://github.com/wimb0/dsmr-remote-datalogger/actions/workflows/docker.yaml/badge.svg)](https://github.com/wimb0/dsmr-remote-datalogger/actions/workflows/docker.yaml)
 
-Docker container for the DSMR Reader remote datalogger, using the official [dsmr_datalogger_api_client.py](https://raw.githubusercontent.com/dsmrreader/dsmr-reader/v5/dsmr_datalogger/scripts/dsmr_datalogger_api_client.py)
+Docker container for the DSMR Reader remote datalogger, using the official [dsmr_datalogger_api_client.py](https://github.com/dsmrreader/dsmr-reader/blob/v6/src/dsmr_datalogger/scripts/dsmr_datalogger_api_client.py)
 
 This container reads data from a smart meter via a P1 serial cable and forwards it to a receiving DSMR-reader instance.
 
-All configuration is handled via environment variables as described in the [official DSMR Reader documentation](https://dsmr-reader.readthedocs.io/en/v5/how-to/installation/remote-datalogger.html#remote-datalogger-device).
+All configuration is handled via environment variables as described in the [official DSMR Reader documentation](https://dsmr-reader.readthedocs.io/en/v6/reference/environment-variables/#dsmr-reader-remote-datalogger-settings).
 
 
 ## Usage (docker-compose)
