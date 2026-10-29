@@ -1,6 +1,6 @@
 # Docker container for the DSMR Reader Remote Datalogger
 
-[![CI - Build and Push Multi-Arch Docker Image](https://github.com/wimb0/dsmr-remote-datalogger/actions/workflows/ci.yaml/badge.svg)](https://github.com/wimb0/dsmr-remote-datalogger/actions/workflows/ci.yaml)
+[![Build and Push Multi-Arch Docker Image](https://github.com/wimb0/dsmr-remote-datalogger/actions/workflows/docker.yaml/badge.svg)](https://github.com/wimb0/dsmr-remote-datalogger/actions/workflows/docker.yaml)
 
 Docker container for the DSMR Reader remote datalogger, using the official [dsmr_datalogger_api_client.py](https://raw.githubusercontent.com/dsmrreader/dsmr-reader/v5/dsmr_datalogger/scripts/dsmr_datalogger_api_client.py)
 
