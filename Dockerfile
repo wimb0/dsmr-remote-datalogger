@@ -1,39 +1,33 @@
-FROM python:3.13-alpine AS builder
+FROM python:3.15-alpine
 
-RUN apk add --no-cache build-base libffi-dev openssl-dev rust cargo
-
-RUN python -m venv /opt/venv
-ENV PATH="/opt/venv/bin:$PATH"
-
-RUN pip install --no-cache-dir pyserial requests python-decouple dsmr-parser
-
-FROM python:3.13-alpine
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
 
 WORKDIR /app
 
-RUN apk add --no-cache curl
+COPY requirements.txt .
+RUN pip install -r requirements.txt
 
-RUN addgroup dsmr && \
-    adduser -D -G dsmr dsmr && \
-    addgroup dsmr dialout
+# Non-root gebruiker met toegang tot de seriële poort
+RUN addgroup -S dsmr \
+ && adduser -S -G dsmr dsmr \
+ && addgroup dsmr dialout
 
-COPY --from=builder /opt/venv /opt/venv
-
-RUN curl -o dsmr_datalogger_api_client.py https://raw.githubusercontent.com/dsmrreader/dsmr-reader/v6/src/dsmr_datalogger/scripts/dsmr_datalogger_api_client.py && \
-    chown dsmr:dsmr /app/dsmr_datalogger_api_client.py
+# Pin bij voorkeur op een commit-hash i.p.v. de v6-branch
+ADD --chown=dsmr:dsmr --chmod=644 \
+    https://raw.githubusercontent.com/dsmrreader/dsmr-reader/v6/src/dsmr_datalogger/scripts/dsmr_datalogger_api_client.py \
+    /app/dsmr_datalogger_api_client.py
 
 USER dsmr
 
-ENV PATH="/opt/venv/bin:$PATH"
-ENV DSMRREADER_REMOTE_DATALOGGER_API_HOSTS="http://dsmr-reader-host"
-ENV DSMRREADER_REMOTE_DATALOGGER_API_KEYS="JE_API_KEY"
-ENV DSMRREADER_REMOTE_DATALOGGER_INPUT_METHOD="serial"
-ENV DSMRREADER_REMOTE_DATALOGGER_SERIAL_PORT="/dev/ttyUSB0"
-ENV DSMRREADER_REMOTE_DATALOGGER_SERIAL_BAUDRATE="115200"
-ENV DSMRREADER_REMOTE_DATALOGGER_SERIAL_BYTESIZE="8"
-ENV DSMRREADER_REMOTE_DATALOGGER_SERIAL_PARITY="N"
+ENV DSMRREADER_REMOTE_DATALOGGER_API_HOSTS="http://dsmr-reader-host" \
+    DSMRREADER_REMOTE_DATALOGGER_INPUT_METHOD="serial" \
+    DSMRREADER_REMOTE_DATALOGGER_SERIAL_PORT="/dev/ttyUSB0" \
+    DSMRREADER_REMOTE_DATALOGGER_SERIAL_BAUDRATE="115200" \
+    DSMRREADER_REMOTE_DATALOGGER_SERIAL_BYTESIZE="8" \
+    DSMRREADER_REMOTE_DATALOGGER_SERIAL_PARITY="N"
+# DSMRREADER_REMOTE_DATALOGGER_API_KEYS: bij runtime meegeven
 
-HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
-    CMD pgrep -f dsmr_datalogger_api_client.py > /dev/null || exit 1
-
-CMD ["python", "./dsmr_datalogger_api_client.py"]
+CMD ["python", "/app/dsmr_datalogger_api_client.py"]
